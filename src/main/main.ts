@@ -17,13 +17,19 @@ import { resolveHtmlPath } from './util';
 
 class AppUpdater {
   constructor() {
-    autoUpdater.logger = require("electron-log")
+    const APP_PATH = app.getAppPath(); 
+
+    //autoUpdater.updateConfigPath = path.join(APP_PATH, '..\\app-update.yml');                                         //Packaged directory
+    autoUpdater.updateConfigPath = path.join(APP_PATH, 'electron-build\\win-unpacked\\resources\\app-update.yml');  //Testing directory
+
     autoUpdater.setFeedURL({
       provider: 'github',
       owner:'TLRazer',
-      repo: 'auto-update-test'
+      repo: 'HapticComposerV3AutoUpdate'
     });
 
+    //autoUpdater.autoDownload = false;           // Does CheckForUpdates automatically download the new version?
+    autoUpdater.autoInstallOnAppQuit = true;    // Does the new version automatically install when the app is closed?
 
 
     log.transports.file.level = 'info';
@@ -132,6 +138,24 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+autoUpdater.on('update-available', () => {
+  console.log("A new version is available! Starting download.");
+})
+
+autoUpdater.on('update-not-available', () => {
+  console.log("No new version available.");
+})
+
+autoUpdater.on('update-downloaded', () => {
+  console.log("New release has been downloaded!");
+  autoUpdater.quitAndInstall();
+})
+
+autoUpdater.on('error', (message) => {
+  console.error('There was a problem updating the application');
+  console.error(message);
+})
 
 app
   .whenReady()

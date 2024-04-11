@@ -60,3 +60,30 @@ a:hover {
   align-items: center;
   margin: 20px 0;
 }
+
+.autoUpdateModal{
+
+  .ant-modal-header{
+    background-color: black;
+
+    .ant-modal-title{
+      color: white;
+      text-transform:uppercase;
+    }
+  }
+
+  .ant-btn-primary{
+    background-color: #5422ff;
+    
+    &::hover{
+      background-color: #2a0aa0;
+    }
+  }
+}
+
+.autoUpdateModal .ant-modal-content{
+  background-color: black;
+  color: white;
+  border-radius: 8px;
+  border: 1px solid white;
+}
