@@ -16,6 +16,9 @@ export const contextIsolation = {
       openUpdateModal:()=>{
         ipcRenderer.invoke(MainProcessCalls.OPEN_UPDATE_MODAL);
       },
+      restartApp:()=>{
+        ipcRenderer.invoke(MainProcessCalls.RESTART_APP);
+      },
     })
   },
   exposeGlobalWindowUtils:()=>{

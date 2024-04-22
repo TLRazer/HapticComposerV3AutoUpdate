@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { MainProcessCalls } from '../common/Types/global/types';
 
 class AppUpdater {
   constructor() {
@@ -39,12 +40,7 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
-
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
-});
+let updateDownloaded = false;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -139,6 +135,19 @@ app.on('window-all-closed', () => {
   }
 });
 
+
+ipcMain.on('ipc-example', async (event, arg) => {
+  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
+  console.log(msgTemplate(arg));
+  event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.on(MainProcessCalls.RESTART_APP, () =>{
+  if(updateDownloaded){
+    autoUpdater.quitAndInstall();
+  }
+});
+
 autoUpdater.on('update-available', () => {
   console.log("A new version is available! Starting download.");
 })
@@ -149,7 +158,8 @@ autoUpdater.on('update-not-available', () => {
 
 autoUpdater.on('update-downloaded', () => {
   console.log("New release has been downloaded!");
-  autoUpdater.quitAndInstall();
+  updateDownloaded = true;
+  //autoUpdater.quitAndInstall();
 })
 
 autoUpdater.on('error', (message) => {

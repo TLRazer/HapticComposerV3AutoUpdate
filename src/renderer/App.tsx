@@ -9,12 +9,15 @@ const App: FC = () => {
   const [currentVersion, setCurrentVersion] = useState("0.0.1");
   const [latestVersion, setLatestVersion] = useState("0.0.2");
 
+  const mainProcessCalls = window["test"] as any;
+
   const showModal = () => {
     setIsModalOpen(true);
   };
 
   const handleOk = () => {
     setIsModalOpen(false);
+    mainProcessCalls.restartApp();
   };
 
   const handleCancel = () => {
